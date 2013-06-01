@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schools location="北京">
+	<school>
+		<name>北京第一中学</name>
+		<studentCount>500</studentCount>
+	</school>
+	<school>
+		<name>北京第二中学</name>
+		<studentCount>400</studentCount>
+	</school>
+</schools>
