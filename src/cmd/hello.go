@@ -1026,6 +1026,29 @@ func m27() {
 	}
 }
 
+//字符串
+func m28() {
+	//strings
+	str := "abcdef"
+	strs := []string{"abc", "def", "ghi"}
+	fmt.Println("contains:", strings.Contains(str, "bc"))
+	fmt.Println("join:", strings.Join(strs, ";"))
+	fmt.Println("index:", strings.Index(str, "a"))
+	fmt.Println("replace:", strings.Replace(str, "a", "bb", -1)) //-1表示全部替换
+	//strconv
+	str2 := make([]byte, 0, 100)
+	fmt.Println("append:", string(strconv.AppendInt(str2, 123, 10))) //最后一个参数为进制
+	fmt.Println("append:", string(strconv.AppendBool(str2, false)))
+	//format把其他类型转为string
+	fmt.Println("format:", strconv.FormatBool(true))
+	//parse把其他类型转为字符串
+	a, err := strconv.ParseInt("123", 10, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(a)
+}
+
 func main() {
 	// m1()
 	// m2(123)
@@ -1059,5 +1082,6 @@ func main() {
 	// m24()
 	// m25()
 	// m26()
-	m27()
+	// m27()
+	m28()
 }
