@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"net"
 	"net/http"
 	"os"
 	"reflect"
@@ -21,6 +22,9 @@ import (
 	"strconv"
 	"strings"
 	"subpackage"
+	"syscall"
+	"time"
+	"unsafe"
 )
 
 var sessionManager *session.SessionManager
@@ -49,7 +53,7 @@ break default func interface select
 case defer go map struct
 chan else goto package switch
 const fallthrough if range type
-continue for import return var 
+continue for import return var
 
 */
 
@@ -267,6 +271,10 @@ func (s *Stu) say() int {
 	return 1
 }
 
+func (s *Stu) personSay() {
+	fmt.Println("I am student. In PersonSay():", s.stuNumber)
+}
+
 //接收者不是指针，对原值修改无效
 func (h Human) doJob() {
 	h.age = 9999 //对原值无效
@@ -313,6 +321,7 @@ func m7() {
 	fmt.Println(stu)
 	//调用struct的method，当method接受者为指针时，不需要&stu.say()，go语言自动转为指针
 	stu.say()
+	//(Stu*).say(&stu);//另外一种调用方法
 	fmt.Println(stu)
 	stu.doJob()
 	fmt.Println(stu)
@@ -357,6 +366,14 @@ func m7a() {
 	case Stu:
 		fmt.Printf("m is Stu:%v\n", val)
 	}
+	//接口的强制转换
+	var m1 Person = &Stu{stuNumber: "lisi"}
+	m1.personSay()
+	var m2 Men = Men(m1) //可以强制转换。
+	m2.doJob()
+	// m1 = Person(m2) //不能再转换回去，对象赋值给接口时会发生拷贝，和原来的对象没有关系
+	//接口不会做receiver的自动转换
+
 }
 
 //map使用
@@ -568,7 +585,7 @@ func m12() {
 /*
 优先级（高-->低）
 ^ !
-* / % 
+* / %
 
 */
 /*
@@ -643,13 +660,60 @@ func m18() {
 
 }
 
+type Foo struct {
+	Name string
+	Age  int
+}
+
+func (foo Foo) Hello(aaa string) {
+	fmt.Println(foo.Name, aaa)
+}
+
 //反射
 func m19() {
-	var stu = Student{name: "zhangsan"}
+	var stu = Foo{"zhangsan", 12}
 	t := reflect.TypeOf(stu)
-	fmt.Println(t)
+	if k := t.Kind(); k != reflect.Struct {
+		fmt.Println("不是struct")
+		return
+	}
+	fmt.Println("type:", t.Name())
 	v := reflect.ValueOf(stu)
-	fmt.Println(v)
+	//获取字段，若获取不可导出的字段值就会报错
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		val := v.Field(i).Interface()
+		fmt.Println(f.Name, ":", f.Type, ":", val)
+	}
+	//获取方法
+	for i := 0; i < t.NumMethod(); i++ {
+		m := t.Method(i)
+		fmt.Println(m.Name, m.Type)
+	}
+	//修改
+	v2 := reflect.ValueOf(&stu)
+	if v2.Kind() == reflect.Ptr && !v2.Elem().CanSet() {
+		fmt.Println("不能修改")
+		return
+	} else {
+		v2 = v2.Elem()
+	}
+	//判断是否找到字段
+	//v2.FieldByName("aaa").IsValid()
+	if f2 := v2.FieldByName("Name"); f2.Kind() == reflect.String {
+		f2.SetString("lisi")
+		fmt.Println(stu)
+	}
+
+	//动态调用方法
+	v3 := reflect.ValueOf(stu)
+	m := v3.MethodByName("Hello")
+	if !m.IsValid() {
+		fmt.Println("方法:", m.IsValid())
+		return
+	}
+	args := []reflect.Value{reflect.ValueOf("aaaa")}
+	m.Call(args)
 }
 
 //并发
@@ -1049,6 +1113,83 @@ func m28() {
 	fmt.Println(a)
 }
 
+//Socket
+func m29() {
+	fmt.Println("start tcp server")
+	tcpAdd, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8888")
+	checkError(err)
+	listener, err := net.ListenTCP("tcp", tcpAdd)
+	checkError(err)
+	fmt.Println("start...")
+	for {
+		fmt.Println("prepare connect...")
+		conn, err := listener.Accept()
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		go func(conn net.Conn) {
+			fmt.Println("New Connect:", conn.LocalAddr())
+			defer conn.Close()
+			conn.SetDeadline(time.Now().Add(2 * time.Minute)) //设置2分钟超时
+			request := make([]byte, 128)
+			for {
+				read_len, err := conn.Read(request)
+				if err != nil {
+					fmt.Println(err)
+					break
+				}
+				if read_len == 0 {
+					break //未读到内容，client已关闭
+				}
+				fmt.Println("Get Request:", string(request))
+				/**
+				if string(request) == "gettime" {
+					n, err := conn.Write([]byte(time.Now().String()))
+					fmt.Println("Send Message To Client:", n)
+					if err != nil {
+						fmt.Println(err)
+					}
+				} else {
+					n, err := conn.Write(request)
+					fmt.Println("Send Message To Client:", n)
+					if err != nil {
+						fmt.Println(err)
+					}
+				}**/
+				n, err := conn.Write([]byte{'a', 'b'})
+				fmt.Println("Send Message To Client:", n)
+				if err != nil {
+					fmt.Println(err)
+				}
+				request = make([]byte, 128) //清空已读内容
+			}
+		}(conn)
+	}
+}
+
+func m30() {
+	dll := syscall.NewLazyDLL("E:\\MyProjects\\mytest\\Debug\\mytest.dll")
+	g := dll.NewProc("SetDictPwd")
+	ret1, ret2, err := g.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr("aaa"))))
+	//ret1, ret2, err := g.Call()
+	fmt.Println(string(ret1), string(ret2), err)
+}
+
+//http client
+func m31() {
+	resp, err := http.Get("http://www.baidu.com")
+	defer resp.Body.Close()
+	checkError(err)
+	fmt.Println("StatusCode:", resp.StatusCode)
+	for key, val := range resp.Header {
+		fmt.Printf("key:%v  value:%v\n", key, val)
+	}
+	input, err := ioutil.ReadAll(resp.Body)
+	checkError(err)
+	fmt.Println(string(input))
+}
+
 func main() {
 	// m1()
 	// m2(123)
@@ -1060,7 +1201,7 @@ func main() {
 	// m5()
 	// m6()
 	// m7()
-	// m7a()
+	//m7a()
 	// m8()
 	// m9()
 	// m9a()
@@ -1083,5 +1224,8 @@ func main() {
 	// m25()
 	// m26()
 	// m27()
-	m28()
+	// m28()
+	// m29()
+	// m30()
+	m31()
 }
