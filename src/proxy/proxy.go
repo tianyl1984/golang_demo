@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func main() {
+func Start() {
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.Verbose = true
 	err := http.ListenAndServe(":8888", proxy)

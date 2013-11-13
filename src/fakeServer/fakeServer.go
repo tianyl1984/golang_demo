@@ -1,11 +1,11 @@
-package main
+package fakeServer
 
 import (
 	"fmt"
 	"net/http"
 )
 
-func main() {
+func Start() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "<html><head><meta http-equiv='Content-Type' content='text/html; charset=gb2312' /><title></title></head><body><input type='button' value=启动 onclick=\"var a = window.open('http://www.baidu.com');a.close();\"></body></html>")

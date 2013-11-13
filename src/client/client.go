@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"fmt"
@@ -74,7 +74,7 @@ func m2() {
 	conn.Close()
 }
 
-func main() {
+func Start() {
 	//m1()
 	m2()
 }
