@@ -25,6 +25,7 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
+	"webSocket"
 )
 
 var sessionManager *session.SessionManager
@@ -1190,6 +1191,10 @@ func m31() {
 	fmt.Println(string(input))
 }
 
+func m32() {
+	webSocket.Start()
+}
+
 func main() {
 	// m1()
 	// m2(123)
@@ -1227,5 +1232,6 @@ func main() {
 	// m28()
 	// m29()
 	// m30()
-	m31()
+	//m31()
+	m32()
 }

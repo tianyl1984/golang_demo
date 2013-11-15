@@ -1,0 +1,54 @@
+<html>
+<head></head>
+<body>
+    <script type="text/javascript">
+        var sock = null;
+        var wsuri = "ws://127.0.0.1:9999/ws";
+
+        var start = function() {
+            sock = new WebSocket(wsuri);
+            sock.onopen = function() {
+                log("connected to " + wsuri);
+            }
+
+            sock.onclose = function(e) {
+                log("connection closed (" + e.code + ")");
+            }
+
+            sock.onmessage = function(e) {
+                log("message received: " + e.data);
+            }
+			
+			sock.onerror = function(e){
+				log("error:" + e);
+			}
+        };
+
+        function send() {
+            var msg = document.getElementById('message').value;
+            sock.send(msg);
+        };
+		
+		function send2(){
+			document.getElementById("img1").src = "/sendMsg?msg=" + document.getElementById('message').value;
+		}
+		
+		function log(msg){
+			var result = document.getElementById("result");
+			result.innerHTML = result.innerHTML + "<br>" + msg;
+		}
+    </script>
+    <h1>WebSocket Echo Test</h1>
+    <form>
+        <p>
+            Message: <input id="message" type="text" value="Hello, world!">
+        </p>
+    </form>
+    <button onclick="start();">Start</button>
+	<button onclick="send();">Send Message</button>
+	<button onclick="send2();">Send Message To Client</button>
+	<hr>
+	<div id="result"></div>
+	<img alt="aaa" src="" id="img1" style="display: none">
+</body>
+</html>
