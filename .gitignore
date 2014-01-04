@@ -1,3 +1,4 @@
 ﻿*.exe
 src/cmd/aaa.txt
 /src/cmd/*.exe
+/src/main/main.exe

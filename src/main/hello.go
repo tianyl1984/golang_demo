@@ -16,6 +16,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"osDemo"
 	"reflect"
 	"runtime"
 	"session"
@@ -1184,7 +1185,7 @@ func m31() {
 	checkError(err)
 	fmt.Println("StatusCode:", resp.StatusCode)
 	for key, val := range resp.Header {
-		fmt.Printf("key:%v  value:%v\n", key, val)
+		fmt.Printf("%v:%v\n", key, val)
 	}
 	input, err := ioutil.ReadAll(resp.Body)
 	checkError(err)
@@ -1193,6 +1194,10 @@ func m31() {
 
 func m32() {
 	webSocket.Start()
+}
+
+func m33() {
+	osDemo.EnvDemo()
 }
 
 func main() {
@@ -1233,5 +1238,6 @@ func main() {
 	// m29()
 	// m30()
 	//m31()
-	m32()
+	//m32()
+	m33()
 }
