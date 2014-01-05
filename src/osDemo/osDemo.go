@@ -3,6 +3,7 @@ package osDemo
 import (
 	"fmt"
 	"os"
+	"os/exec"
 )
 
 func EnvDemo() {
@@ -11,4 +12,14 @@ func EnvDemo() {
 	for _, env := range os.Environ() { //遍历环境变量
 		fmt.Println(env)
 	}
+}
+
+func ExeDemo() {
+	cmd := exec.Command("ipconfig")
+	out, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Command Error!", err.Error())
+		return
+	}
+	fmt.Println(string(out))
 }

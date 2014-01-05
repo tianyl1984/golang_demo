@@ -1197,7 +1197,8 @@ func m32() {
 }
 
 func m33() {
-	osDemo.EnvDemo()
+	//osDemo.EnvDemo()
+	osDemo.ExeDemo()
 }
 
 func main() {
