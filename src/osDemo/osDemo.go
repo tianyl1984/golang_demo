@@ -14,7 +14,7 @@ func EnvDemo() {
 	}
 }
 
-func ExeDemo() {
+func ExeDemo() { //执行外部命令
 	cmd := exec.Command("ipconfig")
 	out, err := cmd.Output()
 	if err != nil {
@@ -22,4 +22,8 @@ func ExeDemo() {
 		return
 	}
 	fmt.Println(string(out))
+}
+
+func ArgsDemo() { //读取参数
+	fmt.Println(os.Args)
 }
