@@ -3,12 +3,11 @@
 package main
 
 import (
-	"database/sql"
+	"dbDemo"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -843,70 +842,8 @@ func printRequest(r *http.Request) {
 	fmt.Println("-----------------Request End------------------")
 }
 
-//访问数据库
-/*
-CREATE TABLE `userinfo` (
-	`id` INT(10) NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(50) NULL DEFAULT NULL,
-	`age` INT NULL DEFAULT NULL,
-	`email` VARCHAR(50) NULL DEFAULT NULL,
-	PRIMARY KEY (`id`)
-)
-*/
 func m23() {
-	db, err := sql.Open("mysql", "root:tyl6632460@tcp(localhost:3306)/mytest1?charset=utf8")
-	checkError(err)
-	// m23Select(db)
-	// m23Insert(db)
-	//m23Update(db)
-	m23Delete(db)
-}
-
-func m23Delete(db *sql.DB) {
-	fmt.Println("<---------start delete--------->")
-	stmt, err := db.Prepare("delete from userinfo where id = ?")
-	checkError(err)
-	res, err := stmt.Exec(1)
-	rows, err := res.RowsAffected()
-	fmt.Println("delete:", rows)
-	fmt.Println("<---------start delete--------->")
-}
-
-func m23Update(db *sql.DB) {
-	fmt.Println("<---------start update--------->")
-	stmt, err := db.Prepare("update userinfo set email = ? where id = ?")
-	checkError(err)
-	rs, err := stmt.Exec("lisi@163.com", 3)
-	checkError(err)
-	fmt.Println(rs.RowsAffected())
-	fmt.Println("<---------end update----------->")
-}
-
-func m23Insert(db *sql.DB) {
-	fmt.Println("<---------start insert--------->")
-	stmt, err := db.Prepare("insert into userinfo(name,age,email) value(?,?,?)")
-	checkError(err)
-	res, err := stmt.Exec("zhangsan", 12, "zhangsan@126.com")
-	checkError(err)
-	id, err := res.LastInsertId()
-	checkError(err)
-	fmt.Println("insert:", id)
-	fmt.Println("<---------end insert----------->")
-}
-
-func m23Select(db *sql.DB) {
-	fmt.Println("<---------start select--------->")
-	rows, err := db.Query("select * from userinfo")
-	for rows.Next() {
-		var id int
-		var name string
-		var age int
-		var email string
-		err = rows.Scan(&id, &name, &age, &email)
-		checkError(err)
-		fmt.Printf("ID:%d,name:%v,age:%d,email:%v", id, name, age, email)
-	}
-	fmt.Println("<---------end select----------->")
+	dbDemo.StartDemo()
 }
 
 func checkError(err error) {
@@ -1231,7 +1168,7 @@ func main() {
 	// m21()
 	// m22()
 	// m22Session()
-	// m23()
+	m23()
 	// m24()
 	// m25()
 	// m26()
@@ -1241,5 +1178,5 @@ func main() {
 	// m30()
 	//m31()
 	//m32()
-	m33()
+	//m33()
 }
