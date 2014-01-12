@@ -16,7 +16,7 @@ import (
 	"net/http"
 	"os"
 	"osDemo"
-	"reflect"
+	"reflectDemo"
 	"runtime"
 	"session"
 	"strconv"
@@ -672,49 +672,7 @@ func (foo Foo) Hello(aaa string) {
 
 //反射
 func m19() {
-	var stu = Foo{"zhangsan", 12}
-	t := reflect.TypeOf(stu)
-	if k := t.Kind(); k != reflect.Struct {
-		fmt.Println("不是struct")
-		return
-	}
-	fmt.Println("type:", t.Name())
-	v := reflect.ValueOf(stu)
-	//获取字段，若获取不可导出的字段值就会报错
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Field(i)
-		val := v.Field(i).Interface()
-		fmt.Println(f.Name, ":", f.Type, ":", val)
-	}
-	//获取方法
-	for i := 0; i < t.NumMethod(); i++ {
-		m := t.Method(i)
-		fmt.Println(m.Name, m.Type)
-	}
-	//修改
-	v2 := reflect.ValueOf(&stu)
-	if v2.Kind() == reflect.Ptr && !v2.Elem().CanSet() {
-		fmt.Println("不能修改")
-		return
-	} else {
-		v2 = v2.Elem()
-	}
-	//判断是否找到字段
-	//v2.FieldByName("aaa").IsValid()
-	if f2 := v2.FieldByName("Name"); f2.Kind() == reflect.String {
-		f2.SetString("lisi")
-		fmt.Println(stu)
-	}
-
-	//动态调用方法
-	v3 := reflect.ValueOf(stu)
-	m := v3.MethodByName("Hello")
-	if !m.IsValid() {
-		fmt.Println("方法:", m.IsValid())
-		return
-	}
-	args := []reflect.Value{reflect.ValueOf("aaaa")}
-	m.Call(args)
+	reflectDemo.StartDemo()
 }
 
 //并发
@@ -1163,12 +1121,12 @@ func main() {
 	// m16()
 	// m17()
 	// m18()
-	// m19()
+	m19()
 	// m20()
 	// m21()
 	// m22()
 	// m22Session()
-	m23()
+	//m23()
 	// m24()
 	// m25()
 	// m26()
