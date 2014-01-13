@@ -5,7 +5,6 @@ package main
 import (
 	"dbDemo"
 	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"html/template"
@@ -26,6 +25,7 @@ import (
 	"time"
 	"unsafe"
 	"webSocket"
+	"xmlDemo"
 )
 
 var sessionManager *session.SessionManager
@@ -811,48 +811,9 @@ func checkError(err error) {
 	}
 }
 
-//使用struct tag指定对应xml中的内容。struct tag可以通过反射获取到
-type Schools struct {
-	XMLName  xml.Name `xml:"schools"`
-	Location string   `xml:"location,attr"`
-	Schools  []School `xml:"school"`
-	Desc     string   `xml:",innerxml"`
-}
-
-type School struct {
-	XMLName      xml.Name `xml:"school"`
-	Name         string   `xml:"name"`
-	StudentCount int      `xml:"studentCount"`
-}
-
 //处理xml
 func m24() {
-	file, err := os.Open("E:\\workspace\\goproject\\src\\cmd\\school.xml") //打开文件
-	if err != nil {
-		fmt.Printf("error0:%v", err)
-		return
-	}
-	defer file.Close() //是否需要在错误之前
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		fmt.Printf("error1:%v", err)
-		return
-	}
-	val := Schools{}
-	err = xml.Unmarshal(data, &val)
-	if err != nil {
-		fmt.Printf("error2:%v", err)
-	}
-	fmt.Println(val)
-	fmt.Println("---------生成xml--------")
-	schools := Schools{Location: "南京"}
-	schools.Schools = append(schools.Schools, School{Name: "南京中学", StudentCount: 100})
-	schools.Schools = append(schools.Schools, School{Name: "南京中学2", StudentCount: 200})
-	output, err := xml.MarshalIndent(schools, "	", "	")
-	if err != nil {
-		fmt.Printf("error3:%v", err)
-	}
-	fmt.Println(string(output))
+	xmlDemo.StartDemo()
 }
 
 type Grade struct {
@@ -1121,13 +1082,13 @@ func main() {
 	// m16()
 	// m17()
 	// m18()
-	m19()
+	//m19()
 	// m20()
 	// m21()
 	// m22()
 	// m22Session()
 	//m23()
-	// m24()
+	m24()
 	// m25()
 	// m26()
 	// m27()
