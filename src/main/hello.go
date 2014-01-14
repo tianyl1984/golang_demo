@@ -4,11 +4,11 @@ package main
 
 import (
 	"dbDemo"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"jsonDemo"
 	"log"
 	"math"
 	"net"
@@ -816,6 +816,11 @@ func m24() {
 	xmlDemo.StartDemo()
 }
 
+//处理json
+func m25() {
+	jsonDemo.StartDemo()
+}
+
 type Grade struct {
 	Num      int
 	Name     string
@@ -829,37 +834,6 @@ type GradeSlice struct {
 type Eclass struct {
 	Name  string
 	Email string
-}
-
-//处理json
-func m25() {
-	var str = `{"Grades":[{"Num":1,"Name":"1年级"},{"Num":2,"Name":"2年级"}]}`
-	var grades GradeSlice
-	//知道json结构
-	err := json.Unmarshal([]byte(str), &grades)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	//json结构未知
-	fmt.Println(grades)
-	var f interface{}
-	err = json.Unmarshal([]byte(str), &f)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(f)
-	//生成json
-	var grades2 GradeSlice
-	grades2.Grades = append(grades2.Grades, Grade{Num: 1, Name: "1年级"})
-	grades2.Grades = append(grades2.Grades, Grade{Num: 2, Name: "2年级"})
-	b, err := json.Marshal(grades2)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(b))
 }
 
 //模板的使用
@@ -1088,8 +1062,8 @@ func main() {
 	// m22()
 	// m22Session()
 	//m23()
-	m24()
-	// m25()
+	//m24()
+	m25()
 	// m26()
 	// m27()
 	// m28()
