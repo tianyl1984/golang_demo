@@ -3,6 +3,7 @@
 package main
 
 import (
+	"concurrentDemo"
 	"dbDemo"
 	"errors"
 	"fileDemo"
@@ -16,7 +17,6 @@ import (
 	"net/http"
 	"osDemo"
 	"reflectDemo"
-	"runtime"
 	"session"
 	"strconv"
 	"strings"
@@ -678,13 +678,7 @@ func m19() {
 
 //并发
 func m20() {
-	go func() {
-		for i := 0; i < 5; i++ {
-			runtime.Gosched() //cpu把时间片让给其他goroutines
-			fmt.Println("Hello")
-		}
-	}()
-	fmt.Println("World") //当前goroutines执行
+	concurrentDemo.StartDemo()
 }
 
 //简单http服务器
@@ -967,7 +961,7 @@ func main() {
 	// m17()
 	// m18()
 	//m19()
-	// m20()
+	m20()
 	// m21()
 	// m22()
 	// m22Session()
@@ -975,7 +969,7 @@ func main() {
 	//m24()
 	//m25()
 	//m26()
-	m27()
+	//m27()
 	// m28()
 	// m29()
 	// m30()
